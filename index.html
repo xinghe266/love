@@ -49,6 +49,8 @@
             }
         }
         
+        /* 移除重复的animation样式，使用默认的fadeIn动画持续时间 */
+        
         .popup.closing {
             animation: fadeOut 0.5s ease forwards;
         }
@@ -61,12 +63,14 @@
         }
         
         .popup-text {
-            font-size: 14px;
+            font-size: 16px; /* 增大字体大小 */
             font-weight: bold;
             color: #5A2D48;
             text-align: center;
             pointer-events: none;
             width: 100%;
+            line-height: 1.4; /* 增加行高，提高可读性 */
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8); /* 添加文字阴影，增加对比度 */
         }
         
         /* 移除关闭按钮 */
@@ -119,7 +123,7 @@
             const heartSize = Math.min(screenWidth, screenHeight) * 0.5; // 爱心大小根据屏幕调整
             
             // 简化的心形曲线生成算法
-            const numPoints = 200; // 减少点数量，使爱心更简洁
+            const numPoints = 150; // 减少点数量，使爱心更简洁
             
             // 使用心形曲线方程生成点
             for (let i = 0; i < numPoints; i++) {
@@ -145,8 +149,8 @@
                 const message = messages[Math.floor(Math.random() * messages.length)];
                 const color = colors[Math.floor(Math.random() * colors.length)];
                 
-                // 延迟创建每个弹窗，形成动画效果
-                const delay = i * 100; // 更快的生成速度
+                // 延迟创建每个弹窗，使用正常速度
+                const delay = i * 100; // 正常生成速度
                 
                 setTimeout(() => {
                     createPopup(message, color, posX + offsetX - width/2, posY + offsetY - height/2, width, height);
