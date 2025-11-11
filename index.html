@@ -2,384 +2,353 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>夏鼎因的提示</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>❤️ 给何红霞宝宝的爱 ❤️</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Microsoft YaHei', '微软雅黑', 'Segoe UI', sans-serif;
-        }
-
         body {
             margin: 0;
             padding: 0;
-            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #FFE5E5 0%, #FFD1DC 100%);
+            height: 100vh;
             overflow: hidden;
+            position: relative;
         }
-
-        /* 底部提示信息 */
-        .control-hint {
-            position: fixed;
-            bottom: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.6);
-            color: #fff;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            z-index: 9999;
-            backdrop-filter: blur(4px);
-            opacity: 0.9;
-            transition: opacity 0.3s ease;
-        }
-
-        .control-hint:hover {
-            opacity: 1;
-        }
-
-        /* 弹窗基础样式 - 更精致小巧 */
-        .tip-window {
-            position: absolute;
-            width: 220px;
-            height: 100px;
-            border-radius: 12px;
-            padding: 12px;
+        
+        /* 主按钮样式 */
+        .main-container {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
-            cursor: move;
-            z-index: 10;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.2s ease;
-            /* 渐入动画 */
-            animation: fadeIn 0.3s ease-out forwards;
-            /* 轻微浮动动画 */
-            animation: float 3s ease-in-out infinite;
+            align-items: center;
+            height: 100vh;
+            z-index: 1000;
+            position: relative;
         }
-
-        /* 浮动动画 */
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-5px) rotate(1deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
+        
+        .main-title {
+            color: #D63384;
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        /* 渐入动画 */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .tip-window:hover {
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px) scale(1.02);
-            z-index: 20;
-        }
-
-        /* 弹窗内容 */
-        .tip-content {
-            text-align: center;
-            font-size: 14px;
-            line-height: 1.5;
-            color: #333;
-            font-weight: 500;
-            padding: 5px;
-            word-wrap: break-word;
-            max-width: 190px;
-        }
-
-        /* 关闭按钮 - 更精致 */
-        .close-btn {
-            position: absolute;
-            top: 6px;
-            right: 8px;
-            width: 16px;
-            height: 16px;
+        
+        .launch-btn {
+            background: #FF69B4;
+            color: white;
             border: none;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 50%;
-            color: #666;
-            font-size: 10px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
+        
+        .launch-btn:hover {
+            background: #FF1493;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6);
+        }
+        
+        .launch-btn:active {
+            transform: translateY(0);
+        }
+        
+        .progress-text {
+            color: #FF1493;
+            font-size: 14px;
+            margin-top: 10px;
+            height: 20px;
+        }
+        
+        /* 弹窗样式 */
+        .popup {
+            position: absolute;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            cursor: pointer;
+            user-select: none;
+            transition: opacity 0.3s ease;
+            animation: fadeIn 0.5s ease forwards;
+            z-index: 100;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            touch-action: manipulation;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            to {
+                opacity: 0.95;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .popup.closing {
+            animation: fadeOut 0.5s ease forwards;
+        }
+        
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+        }
+        
+        .popup-text {
+            font-size: 14px;
+            font-weight: bold;
+            color: #5A2D48;
+            text-align: center;
+            pointer-events: none;
+            flex-grow: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            width: 100%;
         }
-
-        .close-btn:hover {
-            background: rgba(0, 0, 0, 0.2);
-            color: #333;
+        
+        .popup-close {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            color: #8B4789;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 50%;
+            pointer-events: all;
+            transition: background 0.2s;
         }
-
-        /* 初始弹窗 - 突出显示 */
-        .initial-tip {
-            width: 240px;
-            height: 110px;
+        
+        .popup-close:hover {
+            background: rgba(139, 71, 137, 0.1);
+        }
+        
+        /* 主爱心窗口样式 */
+        .main-popup {
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 999;
-            animation: initialFloat 4s ease-in-out infinite;
+            width: 300px;
+            height: 250px;
+            background: #FF1493;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
+            z-index: 10000;
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+            padding: 20px;
         }
-
-        @keyframes initialFloat {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            50% { transform: translate(-50%, -53%) rotate(0.5deg); }
-            100% { transform: translate(-50%, -50%) rotate(0deg); }
+        
+        .main-popup.show {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
-
-        .initial-tip .tip-content {
+        
+        .heart-text {
+            font-size: 40px;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .close-all-btn {
+            background: white;
+            color: #FF1493;
+            border: none;
+            padding: 12px 25px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .close-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
     </style>
 </head>
 <body>
-    <!-- 操作提示 -->
-    <div class="control-hint">空格键关闭全部 | 点击窗口可拖动 | 右上角×关闭单个</div>
+    <!-- 主界面 -->
+    <div class="main-container" id="mainContainer">
+        <div class="main-title">❤️ 给何红霞宝宝的爱 ❤️</div>
+        <button class="launch-btn" onclick="launchPopups()">发射爱心弹窗 💕</button>
+        <div class="progress-text" id="progressText"></div>
+    </div>
+    
+    <!-- 主爱心弹窗 -->
+    <div class="main-popup" id="mainPopup">
+        <div class="heart-text">❤️<br>永远爱你</div>
+        <button class="close-all-btn" onclick="closeAllPopups()">点我关闭所有窗口 💝</button>
+    </div>
 
     <script>
-        class ElegantTipApp {
-            constructor() {
-                this.batchTips = [];
-                this.initialTip = null;
-                this.isDragging = false;
-                this.dragTarget = null;
-                this.dragOffset = { x: 0, y: 0 };
-
-                // 优化后的提示语（保持原有情感，调整部分表述更自然）
-                this.tipTexts = [
-                    '我就知道，有人想我了',
-                    '我们的相遇，你不会遗忘',
-                    '我心里认定是你，就是你',
-                    '我不在时，要好好吃饭睡觉',
-                    '还算你眼光不错，选了我呀',
-                    '新做了一首曲子，弹给你听',
-                    '别不开心，我给你弹首歌吧',
-                    '如果你在就好了，想抱着你睡',
-                    '你的存在，对我特别重要',
-                    '我怕太幸福，你又会消失',
-                    '我会找你，一直找到你',
-                    '没良心的，还记得想我吗',
-                    '没关系，我等你就好',
-                    '夏鼎因，一直爱着你',
-                    '有你在，每天都很安心',
-                    '想你了，真的很想很想',
-                    '我们的故事，还没结束呢',
-                    '照顾好自己，等我找你',
-                    '见到你，所有等待都值得',
-                    '你一笑，我的世界就亮了'
-                ];
-
-                // 柔和的背景色（更协调的色系）
-                this.bgColors = [
-                    '#ffe8f0', '#e8f4ff', '#e8ffe8', '#f5e8ff',
-                    '#fff8e8', '#ffe8e8', '#e8f8ff', '#f0ffe8',
-                    '#ffe8f8', '#f8e8ff', '#e8fff8', '#fff0e8'
-                ];
-
-                // 初始化
-                this.init();
-            }
-
-            init() {
-                // 显示初始弹窗
-                this.showInitialTip();
-                // 监听键盘事件
-                document.addEventListener('keydown', (e) => this.handleKeyPress(e));
-                // 监听全局鼠标事件
-                document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
-                document.addEventListener('mouseup', () => this.handleMouseUp());
-            }
-
-            // 创建弹窗元素
-            createTipElement(text, bgColor, isInitial = false) {
-                const tip = document.createElement('div');
-                tip.className = `tip-window ${isInitial ? 'initial-tip' : ''}`;
-                tip.style.backgroundColor = bgColor;
-
-                // 关闭按钮
-                const closeBtn = document.createElement('button');
-                closeBtn.className = 'close-btn';
-                closeBtn.textContent = '×';
-                closeBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (isInitial) {
-                        this.startBatchTips();
-                    } else {
-                        this.removeTip(tip);
-                    }
-                });
-
-                // 提示内容
-                const content = document.createElement('div');
-                content.className = 'tip-content';
-                content.textContent = text;
-
-                // 组装
-                tip.appendChild(closeBtn);
-                tip.appendChild(content);
-
-                // 绑定拖动事件
-                tip.addEventListener('mousedown', (e) => {
-                    if (e.target !== closeBtn) {
-                        this.startDrag(tip, e);
-                    }
-                });
-
-                return tip;
-            }
-
-            // 显示初始弹窗
-            showInitialTip() {
-                const text = '夏鼎因，我的名字。';
-                const bgColor = '#ffe8f0';
-                this.initialTip = this.createTipElement(text, bgColor, true);
-                document.body.appendChild(this.initialTip);
-            }
-
-            // 启动批量弹窗
-            startBatchTips() {
-                // 移除初始弹窗
-                if (this.initialTip && this.initialTip.parentNode) {
-                    this.initialTip.remove();
-                    this.initialTip = null;
-                }
-
-                // 创建30个弹窗（更合理的数量，避免过于密集）
-                const totalTips = 30;
-                // 分散创建时间（100ms一个，更自然）
-                for (let i = 0; i < totalTips; i++) {
-                    setTimeout(() => {
-                        this.createBatchTip();
-                    }, i * 100);
-                }
-            }
-
-            // 创建单个批量弹窗
-            createBatchTip() {
-                const text = this.tipTexts[Math.floor(Math.random() * this.tipTexts.length)];
-                const bgColor = this.bgColors[Math.floor(Math.random() * this.bgColors.length)];
-                const tip = this.createTipElement(text, bgColor);
-
-                // 随机位置（避免超出屏幕）
-                const screenWidth = window.innerWidth;
-                const screenHeight = window.innerHeight;
-                const tipWidth = 220;
-                const tipHeight = 100;
-
-                // 增加边距，避免贴边
-                const x = Math.floor(Math.random() * (screenWidth - tipWidth - 40)) + 20;
-                const y = Math.floor(Math.random() * (screenHeight - tipHeight - 80)) + 40;
-
-                tip.style.left = `${x}px`;
-                tip.style.top = `${y}px`;
-
-                // 随机浮动动画延迟，更灵动
-                tip.style.animationDelay = `${Math.random() * 2}s`;
-
-                document.body.appendChild(tip);
-                this.batchTips.push(tip);
-            }
-
-            // 拖动功能
-            startDrag(tip, e) {
-                this.isDragging = true;
-                this.dragTarget = tip;
-                const rect = tip.getBoundingClientRect();
-                this.dragOffset.x = e.clientX - rect.left;
-                this.dragOffset.y = e.clientY - rect.top;
-
-                // 拖动时提升层级
-                tip.style.zIndex = 999;
-            }
-
-            handleMouseMove(e) {
-                if (!this.isDragging || !this.dragTarget) return;
-
-                let x = e.clientX - this.dragOffset.x;
-                let y = e.clientY - this.dragOffset.y;
-
-                // 限制在屏幕内
-                const maxX = window.innerWidth - this.dragTarget.offsetWidth;
-                const maxY = window.innerHeight - this.dragTarget.offsetHeight;
-
-                x = Math.max(0, Math.min(x, maxX));
-                y = Math.max(0, Math.min(y, maxY));
-
-                this.dragTarget.style.left = `${x}px`;
-                this.dragTarget.style.top = `${y}px`;
-            }
-
-            handleMouseUp() {
-                if (this.dragTarget) {
-                    this.dragTarget.style.zIndex = 10;
-                }
-                this.isDragging = false;
-                this.dragTarget = null;
-            }
-
-            // 键盘事件处理
-            handleKeyPress(e) {
-                if (e.code === 'Space') {
-                    this.closeAllTips();
-                }
-            }
-
-            // 移除单个弹窗
-            removeTip(tip) {
-                const index = this.batchTips.indexOf(tip);
-                if (index !== -1) {
-                    this.batchTips.splice(index, 1);
-                }
-                if (tip.parentNode) {
-                    // 渐出动画
-                    tip.style.opacity = '0';
-                    tip.style.transform = 'scale(0.8)';
-                    setTimeout(() => {
-                        tip.remove();
-                    }, 200);
-                }
-            }
-
-            // 关闭所有弹窗
-            closeAllTips() {
-                // 移除初始弹窗
-                if (this.initialTip && this.initialTip.parentNode) {
-                    this.initialTip.remove();
-                }
-
-                // 移除所有批量弹窗
-                this.batchTips.forEach(tip => {
-                    if (tip.parentNode) {
-                        tip.style.opacity = '0';
-                        tip.style.transform = 'scale(0.8)';
-                        setTimeout(() => {
-                            tip.remove();
-                        }, 200);
-                    }
-                });
-
-                // 隐藏操作提示
-                const hint = document.querySelector('.control-hint');
-                hint.style.opacity = '0';
+        // 暖心话语列表
+        const messages = [
+            "要天天开心吖 💖", "事事好心意 🌸", "梦想成真 ✨", 
+            "天冷了，多穿衣服 🧣", "愿所有烦恼都消失 🍃",
+            "今天过得开心嘛 🌈", "记得吃水果 🍎", "多喝水哦~ 💧",
+            "顺顺利利 🍀", "保持好心情 😊", "期待下一次见面 🤗",
+            "别熬夜 🌙", "早点休息 💤", "宝宝我想你了 💕",
+            "照顾好自己 🌻", "每天都要元气满满 ⚡", "你是我的唯一 💝",
+            "爱你一辈子 ❤️", "有你真好 🌟", "你是我的 sunshine ☀️",
+            "抱抱你 🤗", "亲亲你 💋", "永远陪着你 👫", "你是我的宝贝 👑",
+            "想你每一天 📅", "爱你三千遍 💯", "你是我的人间理想 🌙",
+            "余生请多指教 💑", "遇见你真好 🍀", "心里只有你 💕"
+        ];
+        
+        // 配色方案
+        const colors = [
+            '#FFE5E5', '#FFD1DC', '#FFA6C9', '#FFB6C1', '#FFC0CB',
+            '#FFDAB9', '#FFE4E1', '#FFF0F5', '#F0E68C', '#E6E6FA',
+            '#D8BFD8', '#DDA0DD', '#F0FFF0', '#FFE4F1', '#E0FFE0',
+            '#FFE4B5', '#FFDEAD', '#FFE4E1', '#FFF5EE', '#FFF8DC',
+            '#F0F8FF', '#E0FFFF', '#F5F5DC', '#FFE5E5', '#FFDAB9'
+        ];
+        
+        let popupCount = 0;
+        const windowsList = [];
+        
+        function launchPopups() {
+            // 禁用按钮
+            document.querySelector('.launch-btn').disabled = true;
+            document.querySelector('.launch-btn').textContent = '发射中...';
+            
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const numWindows = 100;
+            const usedPositions = [];
+            
+            // 进度更新
+            const progressText = document.getElementById('progressText');
+            progressText.textContent = '正在发射爱心... 0%';
+            
+            for (let i = 0; i < numWindows; i++) {
+                const delay = i * 150;  // 修改为150ms延迟
+                
                 setTimeout(() => {
-                    hint.style.display = 'none';
-                }, 300);
-
-                this.batchTips = [];
-                this.initialTip = null;
+                    // 随机大小
+                    const width = Math.floor(Math.random() * 80) + 160; // 160-240
+                    const height = Math.floor(Math.random() * 50) + 90;  // 90-140
+                    
+                    // 随机位置（避免重叠）
+                    let posX, posY, attempts = 0;
+                    do {
+                        posX = Math.floor(Math.random() * (screenWidth - width - 20)) + 10;
+                        posY = Math.floor(Math.random() * (screenHeight - height - 20)) + 10;
+                        attempts++;
+                    } while (isOverlapping(posX, posY, width, height, usedPositions) && attempts < 50);
+                    
+                    usedPositions.push({x: posX, y: posY, w: width, h: height});
+                    
+                    // 随机消息和颜色
+                    const message = messages[Math.floor(Math.random() * messages.length)];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    createPopup(message, color, posX, posY, width, height);
+                    
+                    // 更新进度
+                    if (i % 10 === 0) {
+                        progressText.textContent = `正在发射爱心... ${i}%`;
+                    }
+                    
+                    // 最后一个弹窗创建完毕后显示主爱心窗口
+                    if (i === numWindows - 1) {
+                        setTimeout(() => {
+                            progressText.textContent = '💕 全部弹窗已发射！点击任意窗口关闭';
+                            setTimeout(() => {
+                                document.getElementById('mainContainer').style.display = 'none';
+                                const mainPopup = document.getElementById('mainPopup');
+                                mainPopup.classList.add('show');
+                                mainPopup.style.display = 'flex';
+                            }, 1000);
+                        }, 100);
+                    }
+                }, delay);
             }
         }
-
-        // 页面加载完成后启动
-        window.addEventListener('load', () => {
-            new ElegantTipApp();
-        });
+        
+        function isOverlapping(x, y, w, h, usedPositions) {
+            for (let pos of usedPositions) {
+                if (Math.abs(x - pos.x) < 50 && Math.abs(y - pos.y) < 40) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        function createPopup(message, color, x, y, width, height) {
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            popup.style.left = x + 'px';
+            popup.style.top = y + 'px';
+            popup.style.width = width + 'px';
+            popup.style.height = height + 'px';
+            popup.style.backgroundColor = color;
+            
+            popup.innerHTML = `
+                <button class="popup-close" onclick="event.stopPropagation()">✖</button>
+                <div class="popup-text">${message}</div>
+            `;
+            
+            popup.onclick = closeAllPopups;
+            
+            document.body.appendChild(popup);
+            windowsList.push(popup);
+            popupCount++;
+        }
+        
+        function closeAllPopups() {
+            // 给所有弹窗添加关闭动画
+            windowsList.forEach(window => {
+                if (window && window.classList) {
+                    window.classList.add('closing');
+                }
+            });
+            
+            // 淡出后移除元素
+            setTimeout(() => {
+                windowsList.forEach((window, index) => {
+                    if (window && window.parentNode) {
+                        window.remove();
+                    }
+                });
+                windowsList.length = 0;
+                
+                // 隐藏主弹窗
+                const mainPopup = document.getElementById('mainPopup');
+                if (mainPopup) {
+                    mainPopup.style.display = 'none';
+                }
+                
+                // 重置主界面
+                const mainContainer = document.getElementById('mainContainer');
+                mainContainer.style.display = 'flex';
+                const btn = document.querySelector('.launch-btn');
+                btn.disabled = false;
+                btn.textContent = '发射爱心弹窗 💕';
+                document.getElementById('progressText').textContent = '';
+            }, 500);
+        }
     </script>
 </body>
 </html>
