@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>夏鼎因的提示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', '微软雅黑', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            overflow: hidden;
+        }
+
+        /* 底部提示信息 */
+        .control-hint {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .control-hint:hover {
+            opacity: 1;
+        }
+
+        /* 弹窗基础样式 - 更精致小巧 */
+        .tip-window {
+            position: absolute;
+            width: 220px;
+            height: 100px;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: move;
+            z-index: 10;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+            /* 渐入动画 */
+            animation: fadeIn 0.3s ease-out forwards;
+            /* 轻微浮动动画 */
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* 浮动动画 */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* 渐入动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .tip-window:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px) scale(1.02);
+            z-index: 20;
+        }
+
+        /* 弹窗内容 */
+        .tip-content {
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+            font-weight: 500;
+            padding: 5px;
+            word-wrap: break-word;
+            max-width: 190px;
+        }
+
+        /* 关闭按钮 - 更精致 */
+        .close-btn {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            width: 16px;
+            height: 16px;
+            border: none;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            color: #666;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(0, 0, 0, 0.2);
+            color: #333;
+        }
+
+        /* 初始弹窗 - 突出显示 */
+        .initial-tip {
+            width: 240px;
+            height: 110px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 999;
+            animation: initialFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes initialFloat {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            50% { transform: translate(-50%, -53%) rotate(0.5deg); }
+            100% { transform: translate(-50%, -50%) rotate(0deg); }
+        }
+
+        .initial-tip .tip-content {
+            font-size: 16px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- 操作提示 -->
+    <div class="control-hint">空格键关闭全部 | 点击窗口可拖动 | 右上角×关闭单个</div>
+
+    <script>
+        class ElegantTipApp {
+            constructor() {
+                this.batchTips = [];
+                this.initialTip = null;
+                this.isDragging = false;
+                this.dragTarget = null;
+                this.dragOffset = { x: 0, y: 0 };
+
+                // 优化后的提示语（保持原有情感，调整部分表述更自然）
+                this.tipTexts = [
+                    '我就知道，有人想我了',
+                    '我们的相遇，你不会遗忘',
+                    '我心里认定是你，就是你',
+                    '我不在时，要好好吃饭睡觉',
+                    '还算你眼光不错，选了我呀',
+                    '新做了一首曲子，弹给你听',
+                    '别不开心，我给你弹首歌吧',
+                    '如果你在就好了，想抱着你睡',
+                    '你的存在，对我特别重要',
+                    '我怕太幸福，你又会消失',
+                    '我会找你，一直找到你',
+                    '没良心的，还记得想我吗',
+                    '没关系，我等你就好',
+                    '夏鼎因，一直爱着你',
+                    '有你在，每天都很安心',
+                    '想你了，真的很想很想',
+                    '我们的故事，还没结束呢',
+                    '照顾好自己，等我找你',
+                    '见到你，所有等待都值得',
+                    '你一笑，我的世界就亮了'
+                ];
+
+                // 柔和的背景色（更协调的色系）
+                this.bgColors = [
+                    '#ffe8f0', '#e8f4ff', '#e8ffe8', '#f5e8ff',
+                    '#fff8e8', '#ffe8e8', '#e8f8ff', '#f0ffe8',
+                    '#ffe8f8', '#f8e8ff', '#e8fff8', '#fff0e8'
+                ];
+
+                // 初始化
+                this.init();
+            }
+
+            init() {
+                // 显示初始弹窗
+                this.showInitialTip();
+                // 监听键盘事件
+                document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+                // 监听全局鼠标事件
+                document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+                document.addEventListener('mouseup', () => this.handleMouseUp());
+            }
+
+            // 创建弹窗元素
+            createTipElement(text, bgColor, isInitial = false) {
+                const tip = document.createElement('div');
+                tip.className = `tip-window ${isInitial ? 'initial-tip' : ''}`;
+                tip.style.backgroundColor = bgColor;
+
+                // 关闭按钮
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'close-btn';
+                closeBtn.textContent = '×';
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (isInitial) {
+                        this.startBatchTips();
+                    } else {
+                        this.removeTip(tip);
+                    }
+                });
+
+                // 提示内容
+                const content = document.createElement('div');
+                content.className = 'tip-content';
+                content.textContent = text;
+
+                // 组装
+                tip.appendChild(closeBtn);
+                tip.appendChild(content);
+
+                // 绑定拖动事件
+                tip.addEventListener('mousedown', (e) => {
+                    if (e.target !== closeBtn) {
+                        this.startDrag(tip, e);
+                    }
+                });
+
+                return tip;
+            }
+
+            // 显示初始弹窗
+            showInitialTip() {
+                const text = '夏鼎因，我的名字。';
+                const bgColor = '#ffe8f0';
+                this.initialTip = this.createTipElement(text, bgColor, true);
+                document.body.appendChild(this.initialTip);
+            }
+
+            // 启动批量弹窗
+            startBatchTips() {
+                // 移除初始弹窗
+                if (this.initialTip && this.initialTip.parentNode) {
+                    this.initialTip.remove();
+                    this.initialTip = null;
+                }
+
+                // 创建30个弹窗（更合理的数量，避免过于密集）
+                const totalTips = 30;
+                // 分散创建时间（100ms一个，更自然）
+                for (let i = 0; i < totalTips; i++) {
+                    setTimeout(() => {
+                        this.createBatchTip();
+                    }, i * 100);
+                }
+            }
+
+            // 创建单个批量弹窗
+            createBatchTip() {
+                const text = this.tipTexts[Math.floor(Math.random() * this.tipTexts.length)];
+                const bgColor = this.bgColors[Math.floor(Math.random() * this.bgColors.length)];
+                const tip = this.createTipElement(text, bgColor);
+
+                // 随机位置（避免超出屏幕）
+                const screenWidth = window.innerWidth;
+                const screenHeight = window.innerHeight;
+                const tipWidth = 220;
+                const tipHeight = 100;
+
+                // 增加边距，避免贴边
+                const x = Math.floor(Math.random() * (screenWidth - tipWidth - 40)) + 20;
+                const y = Math.floor(Math.random() * (screenHeight - tipHeight - 80)) + 40;
+
+                tip.style.left = `${x}px`;
+                tip.style.top = `${y}px`;
+
+                // 随机浮动动画延迟，更灵动
+                tip.style.animationDelay = `${Math.random() * 2}s`;
+
+                document.body.appendChild(tip);
+                this.batchTips.push(tip);
+            }
+
+            // 拖动功能
+            startDrag(tip, e) {
+                this.isDragging = true;
+                this.dragTarget = tip;
+                const rect = tip.getBoundingClientRect();
+                this.dragOffset.x = e.clientX - rect.left;
+                this.dragOffset.y = e.clientY - rect.top;
+
+                // 拖动时提升层级
+                tip.style.zIndex = 999;
+            }
+
+            handleMouseMove(e) {
+                if (!this.isDragging || !this.dragTarget) return;
+
+                let x = e.clientX - this.dragOffset.x;
+                let y = e.clientY - this.dragOffset.y;
+
+                // 限制在屏幕内
+                const maxX = window.innerWidth - this.dragTarget.offsetWidth;
+                const maxY = window.innerHeight - this.dragTarget.offsetHeight;
+
+                x = Math.max(0, Math.min(x, maxX));
+                y = Math.max(0, Math.min(y, maxY));
+
+                this.dragTarget.style.left = `${x}px`;
+                this.dragTarget.style.top = `${y}px`;
+            }
+
+            handleMouseUp() {
+                if (this.dragTarget) {
+                    this.dragTarget.style.zIndex = 10;
+                }
+                this.isDragging = false;
+                this.dragTarget = null;
+            }
+
+            // 键盘事件处理
+            handleKeyPress(e) {
+                if (e.code === 'Space') {
+                    this.closeAllTips();
+                }
+            }
+
+            // 移除单个弹窗
+            removeTip(tip) {
+                const index = this.batchTips.indexOf(tip);
+                if (index !== -1) {
+                    this.batchTips.splice(index, 1);
+                }
+                if (tip.parentNode) {
+                    // 渐出动画
+                    tip.style.opacity = '0';
+                    tip.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        tip.remove();
+                    }, 200);
+                }
+            }
+
+            // 关闭所有弹窗
+            closeAllTips() {
+                // 移除初始弹窗
+                if (this.initialTip && this.initialTip.parentNode) {
+                    this.initialTip.remove();
+                }
+
+                // 移除所有批量弹窗
+                this.batchTips.forEach(tip => {
+                    if (tip.parentNode) {
+                        tip.style.opacity = '0';
+                        tip.style.transform = 'scale(0.8)';
+                        setTimeout(() => {
+                            tip.remove();
+                        }, 200);
+                    }
+                });
+
+                // 隐藏操作提示
+                const hint = document.querySelector('.control-hint');
+                hint.style.opacity = '0';
+                setTimeout(() => {
+                    hint.style.display = 'none';
+                }, 300);
+
+                this.batchTips = [];
+                this.initialTip = null;
+            }
+        }
+
+        // 页面加载完成后启动
+        window.addEventListener('load', () => {
+            new ElegantTipApp();
+        });
+    </script>
+</body>
+</html>
